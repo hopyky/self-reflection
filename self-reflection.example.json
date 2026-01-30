@@ -1,6 +1,6 @@
 {
   "threshold_minutes": 60,
-  "memory_file": "~/clawd/memory/self-review.md",
+  "memory_file": "~/workspace/memory/self-review.md",
   "state_file": "~/.openclaw/self-review-state.json",
   "max_entries_context": 5
 }

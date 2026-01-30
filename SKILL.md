@@ -1,13 +1,13 @@
 ---
 name: self-reflection
 description: Continuous self-improvement through structured reflection and memory
-version: 1.0.0
+version: 1.1.0
 metadata: {"openclaw":{"emoji":"🪞","requires":{"bins":["jq","date"]}}}
 ---
 
 # 🪞 Self-Reflection
 
-A skill for continuous self-improvement. The agent tracks mistakes, lessons learned, and improvements over time.
+A skill for continuous self-improvement. The agent tracks mistakes, lessons learned, and improvements over time through regular heartbeat-triggered reflections.
 
 ## Quick Start
 
@@ -27,10 +27,20 @@ self-reflection stats
 
 ## How It Works
 
-1. Agent runs `self-reflection check` at session start
-2. If > threshold minutes since last reflection → returns ALERT
-3. Agent performs self-analysis and logs insights
-4. Lessons are stored in a Markdown file for persistence
+```
+Heartbeat (60m) → Agent reads HEARTBEAT.md → Runs self-reflection check
+                                                      │
+                                            ┌─────────┴─────────┐
+                                            ▼                   ▼
+                                           OK              ALERT
+                                            │                   │
+                                       Continue            Reflect
+                                                               │
+                                                     ┌─────────┴─────────┐
+                                                     ▼                   ▼
+                                                   read               log
+                                              (past lessons)     (new insights)
+```
 
 ## Commands
 
@@ -41,6 +51,31 @@ self-reflection stats
 | `read [n]` | Read last n reflections (default: 5) |
 | `stats` | Show reflection statistics |
 | `reset` | Reset the timer |
+
+## OpenClaw Integration
+
+Enable heartbeat in `~/.openclaw/openclaw.json`:
+
+```json
+{
+  "agents": {
+    "defaults": {
+      "heartbeat": {
+        "every": "60m",
+        "activeHours": { "start": "08:00", "end": "22:00" }
+      }
+    }
+  }
+}
+```
+
+Add to your workspace `HEARTBEAT.md`:
+
+```markdown
+## Self-Reflection Check (required)
+Run `self-reflection check` at each heartbeat.
+If ALERT: read past lessons, reflect, then log insights.
+```
 
 ## Configuration
 
@@ -53,18 +88,6 @@ Create `~/.openclaw/self-reflection.json`:
   "state_file": "~/.openclaw/self-review-state.json",
   "max_entries_context": 5
 }
-```
-
-## Integration
-
-Add to your agent's system prompt or AGENTS.md:
-
-```
-At session start, run `self-reflection check`.
-If ALERT:
-1. Run `self-reflection read` to review past lessons
-2. Identify mistakes or improvements from recent interactions
-3. Log insights with `self-reflection log "<tag>" "<miss>" "<fix>"`
 ```
 
 ## Author
