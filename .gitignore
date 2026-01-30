@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Runtime files (these contain user data)
+self-review-state*.json
+self-review*.md
+
+# Local config (users should create their own)
+# Keep the example though
+!self-reflection.example.json
